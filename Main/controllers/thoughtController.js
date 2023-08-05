@@ -1,4 +1,4 @@
-const { Course, Student, Thought } = require('../models');
+const { Course, Student, Thought, Reaction } = require('../models');
 
 module.exports = {
   // Get all thoughts
@@ -59,6 +59,27 @@ module.exports = {
 
       res.json(thought);
       res.json({ message: 'Thought of thid id updated!' });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  // Add a reaction to a thought
+  async AddReaction(req, res) {
+    try {
+
+      const reaction = await Reaction.create(req.body);
+      res.json(reaction);
+
+      const addedReaction = await Thought.findByIdAndUpdate(
+        req.params._id,
+        { $push: { reactions: req.body } },
+        { new: true }
+      );
+      
+
+      res.json(addedReaction);
+      res.json({ message: 'Reaction of that thougths has been added' });
     } catch (err) {
       res.status(500).json(err);
     }
