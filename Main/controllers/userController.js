@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
-const { Student, Course, User } = require('../models');
+const { Student, Course, User, Thought } = require('../models');
 
 // // Aggregate function to get the number of students overall
 const headCount = async () => {
@@ -125,6 +125,49 @@ const headCount = async () => {
   
         res.json(friend);
         res.json({ message: 'Friend array of that User of thit id was added!' });
+      }catch (err) {
+        res.status(500).json(err);
+      }
+    },
+
+    //Add thought
+    async addThought (req, res) {
+      console.log("fucntion started");
+      try{
+        const thought = await User.findByIdAndUpdate(
+          
+          req.params._id,
+          { $push: { thoughts: req.body } },
+          { new: true }
+        );
+
+        if (!thought) {
+          res.status(404).json({ message: 'No friend array with this id!' });
+        }
+  
+        res.json(thought);
+        res.json({ message: 'thought array of that User of thit id was added!' });
+      }catch (err) {
+        res.status(500).json(err);
+      }
+    },
+
+    // Delete a thougth which already exist in reaction array
+    async deleteThought (req, res) {
+      try{
+        const thought = await User.findByIdAndUpdate(
+          
+          req.params._id,
+          { $pull: { thoughts: req.params._thoughtId } },
+          { new: true }
+        );
+
+        if (!thought) {
+          res.status(404).json({ message: 'No thought array with this id!' });
+        }
+  
+        res.json(thought);
+        res.json({ message: 'Thought array of that User of thit id was added!' });
       }catch (err) {
         res.status(500).json(err);
       }
