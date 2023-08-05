@@ -2,11 +2,11 @@ const { ObjectId } = require('mongoose').Types;
 const { Student, Course, User } = require('../models');
 
 // // Aggregate function to get the number of students overall
-// const headCount = async () => {
-//   const numberOfStudents = await Student.aggregate()
-//     .count('studentCount');
-//   return numberOfStudents;
-// }
+const headCount = async () => {
+  const numberOfStudents = await Student.aggregate()
+    .count('studentCount');
+  return numberOfStudents;
+}
 
 // // Aggregate function for getting the overall grade using $avg
 // const grade = async (studentId) =>
@@ -84,6 +84,27 @@ const { Student, Course, User } = require('../models');
         res.json(user);
         res.json({ message: 'User of thit id updated!' });
       } catch (err) {
+        res.status(500).json(err);
+      }
+    },
+
+    //Add a frind
+    async addFriend (req, res) {
+      try{
+        const friend = await User.findByIdAndUpdate(
+          
+          req.params._id,
+          { $push: { friends: req.body } },
+          { new: true }
+        );
+
+        if (!friend) {
+          res.status(404).json({ message: 'No friend array with this id!' });
+        }
+  
+        res.json(friend);
+        res.json({ message: 'Friend array of that User of thit id was added!' });
+      }catch (err) {
         res.status(500).json(err);
       }
     },
