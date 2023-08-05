@@ -108,4 +108,25 @@ const headCount = async () => {
         res.status(500).json(err);
       }
     },
+
+    // Delete a friend who exists in friend array
+    async deleteFriend (req, res) {
+      try{
+        const friend = await User.findByIdAndUpdate(
+          
+          req.params._id,
+          { $pull: { friends: req.params.friendId } },
+          { new: true }
+        );
+
+        if (!friend) {
+          res.status(404).json({ message: 'No friend array with this id!' });
+        }
+  
+        res.json(friend);
+        res.json({ message: 'Friend array of that User of thit id was added!' });
+      }catch (err) {
+        res.status(500).json(err);
+      }
+    },
   };
